@@ -1,15 +1,16 @@
-import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, ImATeapotException } from '@nestjs/common';
+import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, ImATeapotException } from '@nestjs/common';
 import { Response } from 'express';
 
 @Catch(ImATeapotException)
 export class EjemploFilter<ImATeapotException> implements ExceptionFilter {
 
-  catch(exception: ImATeapotException, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
     console.log('Filter EjemploFilter');
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    console.log('Exception', exception.getResponse());
     response.status(400).json({
-      mensaje: 'Error en la petición',
+      mensajes: exception.getResponse()["message"],
       error: "Error en la petición",
     })
   }
